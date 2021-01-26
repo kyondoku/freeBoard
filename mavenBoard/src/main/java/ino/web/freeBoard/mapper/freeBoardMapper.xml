@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ino.web.freeBoard.mapper.FreeBoardMapper">
+
+	<select id="freeBoardGetList" parameterType="java.util.HashMap" resultType="freeBoardDto" > <!-- resultType="ino.web.board.dto.BoardDto" -->
+		SELECT A.*
+		  FROM
+		(
+		SELECT ROW_NUMBER() OVER(ORDER BY NUM DESC) AS rnum, CODE_TYPE, NUM, NAME, TITLE, CONTENT, REGDATE
+	    FROM FREEBOARD
+	    WHERE 1=1
+	   		<if test="searchText != '' and !searchText.equals('') and searchType == 'DCODE001'">
+			AND NUM = #{searchText}
+			</if>
+		 	<if test="searchText != '' and !searchText.equals('') and searchType == 'DCODE002'">
+			AND TITLE LIKE '%'||#{searchText}||'%'
+			</if>
+			<if test="startDate != '' ">
+			AND TO_CHAR(REGDATE, 'YYYYMMDD') BETWEEN #{startDate} AND #{endDate}
+			</if>
+		ORDER BY NUM DESC
+		) A
+		WHERE a.rnum between #{start} and #{end}
+	</select>
+	
+	<select id="selCodeList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		SELECT * FROM CODEM M, CODED D
+		WHERE M.CODE = D.CODE
+		AND M.CODE = #{code}
+		AND M.USE_YN = #{useYn}
+		AND D.USE_YN = #{useYn}
+	</select>
+	
+	<select id="selPagingCnt" parameterType="java.util.HashMap" resultType="int">
+		SELECT COUNT(*) AS CNT FROM FREEBOARD
+		WHERE 1=1
+			<if test="searchText != '' and !searchText.equals('') and searchType == 'DCODE001'">
+			AND NUM = #{searchText}
+			</if>
+			<if test="searchText != '' and !searchText.equals('') and searchType == 'DCODE002'">
+			AND TITLE LIKE '%'||#{searchText}||'%'
+			</if>
+			<if test="startDate != '' and startDate != null">
+			AND TO_CHAR(REGDATE, 'YYYYMMDD') BETWEEN #{startDate} AND #{endDate}
+			</if>
+	</select>
+
+	<insert id="freeBoardInsertPro" parameterType="freeBoardDto">
+		INSERT INTO FREEBOARD(CODE_TYPE, NUM, TITLE, NAME, REGDATE, CONTENT)
+		VALUES( #{code_type}, NUM.NEXTVAL, #{title}, #{name}, SYSDATE, #{content})
+	</insert>
+
+	<select id="freeBoardDetailByNum" resultType="freeBoardDto" parameterType="int">
+		SELECT CODE_TYPE, NUM, TITLE, NAME, TO_CHAR(REGDATE,'YYYY/MM/DD') REGDATE, CONTENT FROM FREEBOARD
+		WHERE NUM=#{num}
+	</select>
+
+	<select id="freeBoardNewNum" resultType="int">
+		SELECT MAX(NUM)
+		FROM FREEBOARD
+	</select>
+
+	<update id="freeBoardModify" parameterType="freeBoardDto">
+		UPDATE FREEBOARD
+		SET TITLE = #{title}
+				, CONTENT = #{content}
+				, CODE_TYPE = #{code_type}
+		WHERE NUM = #{num}
+	</update>
+
+	<update id="freeBoardDelete" parameterType="int">
+		DELETE FROM FREEBOARD
+		WHERE NUM
+		= #{num}
+	</update>
+</mapper>

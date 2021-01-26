@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ino.web.commonCode.mapper">
+	<insert id="insCodeDetail" parameterType="java.util.HashMap">
+		INSERT INTO CODED (CODE, DECODE, DECODE_NAME, USE_YN)
+		VALUES (#{CODE}, #{DECODE}, #{DECODE_NAME}, #{USE_YN})
+	</insert>
+	
+	<select id="selectCommonCodeList" resultType="java.util.HashMap">	
+		SELECT * 
+		  FROM CODEM
+	</select>
+	
+	<select id="selectCommonCodeDetail" resultType="java.util.HashMap">	
+		SELECT * FROM CODED
+		WHERE CODE = #{CODE}
+	</select>
+	
+	<select id="selectCommonCodeChk" resultType="java.lang.Integer">	
+		SELECT COUNT(*) FROM CODED WHERE DECODE IN (#{DECODE1}, #{DECODE2}, #{DECODE3})
+	</select>
+	
+	<update id="udtCodeDetail" parameterType="java.util.HashMap">
+		UPDATE CODED
+		SET DECODE_NAME = #{DECODE_NAME}
+          , USE_YN = #{USE_YN}
+		WHERE DECODE = #{DECODE}
+	</update>
+	
+	<update id="delCodeDetail" parameterType="java.util.HashMap">
+		DELETE FROM CODED WHERE DECODE = #{DECODE}
+	</update>
+</mapper>
