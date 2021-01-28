@@ -9,7 +9,24 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript">
 
+// 추가, 수정, 삭제 count, list
+
+let addCount = 0;
+let modCount = 1;
+var dataList = new Array();
+var addModList = new Array(); //배열선언
+var delList = new Array();
+
 $(document).ready(function(){
+	
+	/*
+		
+		배열 = [];
+	   list : [{"code" : code , "decode" : decode, "decode_name" :decode_name , "useYn"  : useYn , "flag" : "A"},
+		   		{"code" : code , "decode" : decode, "decode_name" :decode_name , "useYn"  : useYn , "flag" : "U"},
+		   		{"code" : code , "decode" : decode, "decode_name" :decode_name , "useYn"  : useYn , "flag" : "D"}]
+	*/
+	
 	
 	$("#btnUpdate").click(function(){
 		
@@ -25,123 +42,66 @@ $(document).ready(function(){
 		checkbox.each(function(i) {
 			var td_code = $(this).parent().next();
 		
-/* 			$(this).parent("#frm").find() */
-		
-			$(this).prop("id", "mod_chkCode");
+			$(this).attr("onclick", "return(false)");
+			$(this).prop("name", "mod_chkCode");
+ 			$(this).prop("class", "chkCode");
 			
-			td_code.children().prop("name", "mod_code");
 			td_code.children().prop("disabled", false);
 			td_code.children().prop("readonly", true);
 			
-			td_code.next().children().prop("name", "mod_decode");
 			td_code.next().children().prop("disabled", false);
 			td_code.next().children().prop("readonly", true);
 			
-			td_code.next().next().children().prop("name", "mod_decode_name");
 			td_code.next().next().children().prop("disabled", false);
 			
 			td_code.next().next().next().children().eq(0).prop("name", "mod_useYn_"+(modCount))
 			td_code.next().next().next().children().eq(0).prop("disabled", false);
 			td_code.next().next().next().children().eq(2).prop("name", "mod_useYn_"+(modCount))
-			td_code.next().next().next().children().eq(2).prop("disabled", false);
+			td_code.next().next().next().children().eq(2).prop("disabled", false);	
 
 			modCount++;
 		})
- 		$('input:checkbox[id="mod_chkCode"]').prop("checked",false);
-/* 		$('input:checkbox[id="mod_chkCode"]').each(function() {
-			$(this).prop("checked", false);
-		}) */
+ 		$('input:checkbox[id="chkCode"]').prop("checked",false);
 	})
 	
-	$("#delCode").click(function(){	
+	$("#delCode").click(function(){
+		$("input[name='add_chkCode']:checked").prop('disabled', true);
+		$("input[name='mod_chkCode']:checked").prop('disabled', true);
+		
 		var checkbox = $("input[name='chkCode']:checked");
 		
-		console.log(checkbox.length)
-		console.log(checkbox)
+		for(var i=0; i<checkbox.length; i++){
+			delList.push({"flag" : "D", decode : checkbox[i].value});		
+		}
 		
 		if(checkbox.length > 0) {
-			checkbox.each(function(i) {
-				delList.push($(this).val())
-				console.log('delListLength : ' + delList.length)
-				
+			checkbox.each(function(i) {		
 				var tr = $(this).parent().parent();
 				var td_chkCode = $(this).parent();
+
 				tr.prop("style", "background: red;")
 				
-				$(this).prop("name", "del_chkCode");
-				
+				$(this).prop("id", "chkCode");
 				td_chkCode.next().children().prop("disabled", true);
 				td_chkCode.next().next().children().prop("disabled", true);
 				td_chkCode.next().next().next().children().prop("disabled", true);
 				td_chkCode.next().next().next().next().children().eq(0).prop("disabled", true);
-				td_chkCode.next().next().next().next().children().eq(2).prop("disabled", true);
-				
-				$('input:checkbox[name="del_chkCode"]').prop("checked",false);
+				td_chkCode.next().next().next().next().children().eq(2).prop("disabled", true);			
+
+				$('input:checkbox[name="chkCode"]').prop("checked",false);
 			})
+		  	console.log('delList : ' + delList);
 		} else {
 			if(confirm('삭제리스트를 초기화 하시겠습니까?')) {
-				$('input:checkbox[name="del_chkCode"]').parent().parent().prop("style", "background: none;");
+				$('input:checkbox[name="chkCode"]').parent().parent().prop("style", "background: none;");
 				delList = [];
-				console.log('delListLength : ' + delList.length)
+			  	console.log('delList : ' + delList);
 			}
 		}
+		$("input[name='add_chkCode']:checked").prop('disabled', false);
+		$("input[name='mod_chkCode']:checked").prop('disabled', false);	
 	})
-	
-	
-/* 	$("#delCancel").click(function(){
-		var checkbox = $("input[name='del_chkCode']:checked");
-		console.log('ddddddddddddddddddd')
-		
-	}); */
-	
-	
-	
 });
-	
-	// 추가, 수정, 삭제 count, list
-	let addCount = 0;
-	let modCount = 1;
-	var delList = [];
-	
-	function delCancel(obj){
-		
-		console.log(obj.value);
-		console.log(obj.parent())
-		
- 		var td_decode = $(this).parent().prev().prev().prev();
-		
- 		td_decode.children().prop("disabled", false)
- 		console.log(td_decode.children().val());
- 		console.log(td_decode.children().value)
-
- 		
- 		
-/*  		checkbox.each(function(){
-			var decode = $(this).parent().prev().prev().prev().children();
-			console.log(decode.value)
- 		}) */
-		
-/* 			console.log(delList.length)
-			var tr = $(this).parent().parent();
-			var td_chkCode = $(this).parent();
-			tr.prop("style", "background: red;")
-			
-			$(this).prop("disabled", true);
-			$(this).prop("name", "del_chkCode");
-			
-			td_chkCode.next().children().prop("disabled", true);
-			td_chkCode.next().next().children().prop("disabled", true);
-			td_chkCode.next().next().next().children().prop("disabled", true);
-			td_chkCode.next().next().next().next().children().eq(0).prop("disabled", true);
-			td_chkCode.next().next().next().next().children().eq(2).prop("disabled", true);
-			
-			var btn_cancel = document.createElement('button');
-			btn_cancel.innerText = '취소';
-			btn_cancel.setAttribute('onclick', 'delCancel()');
-			td_chkCode.next().next().next().next().next().append(btn_cancel); */
-		
-		
-	}
 		
  	function checkCode() {
  		// 값없이 완료 누를 경우
@@ -186,6 +146,7 @@ $(document).ready(function(){
 					return false;
 				} else {
 					alert('중복코드가 존재하지 않습니다.');
+					$('input:text[name="add_decode"]').prop("name", "decode");	
 					regCode();
 				}
 			}
@@ -193,19 +154,70 @@ $(document).ready(function(){
 	}
  	
  	function regCode() {
-		
- 		var SerializeData = $("#frm").serialize();
-	 	SerializeData += '&delList=' + delList;  			
+ 		
+		// addList
+		var addCheckbox = $("input[name='add_chkCode']:checked");
 
-   		$.ajax({
+		console.log(addCheckbox.length);
+		
+		if(addCheckbox.length > 0) {
+			addCheckbox.each(function(i) {	
+				var code = $(this).parent().next().children().val();
+				var	decode = $(this).parent().next().next().children().val();
+				var decode_name = $(this).parent().next().next().next().children().val();
+				var td_useYn = $(this).parent().next().next().next().next();
+				
+				if(td_useYn.children().eq(0).prop('checked')){
+					var useYn = 'Y';
+				} else {
+					var useYn = 'N';
+				}
+
+				addModList.push({"flag" : "I" , CODE : code, DECODE : decode, DECODE_NAME : decode_name, USE_YN : useYn});
+			})
+		}
+		
+		//modList 
+		var modCheckbox = $("input[name='mod_chkCode']:checked");
+		
+		if(modCheckbox.length > 0) {
+			modCheckbox.each(function(i) {	
+				var	decode = $(this).parent().next().next().children().val();
+				var decode_name = $(this).parent().next().next().next().children().val();
+				var td_useYn = $(this).parent().next().next().next().next();
+				
+				if(td_useYn.children().eq(0).prop('checked')){
+					var useYn = 'Y';
+				} else {
+					var useYn = 'N';
+				}
+				addModList.push({"flag" : "U" , CODE : code, DECODE : decode, DECODE_NAME : decode_name, USE_YN : useYn});
+			})
+		}
+		
+		//dataList에 합치기
+		for(var i=0; i<addModList.length; i++) {
+			dataList.push(addModList[i])
+		}
+		
+		for(var i=0; i<delList.length; i++) {
+			dataList.push(delList[i]);
+		}
+		
+		dataList = JSON.stringify(dataList);
+		
+		console.log(dataList)
+ 			
+		$.ajax({
 			url: "./regCodeDetail.ino",
 			type: "POST",
-			data: SerializeData,
 			async: false,
+			data: dataList,
+			contentType : "application/json; charset=utf-8",
 			success: function(data){
 				addCount = 0;
 				modCount = 1;
-				alert(data.regMsg);
+				console.log(data.regMsg);
 				location.href='./commonCodeDetail.ino?num='+`${CODE}`
 			}
 		})
@@ -220,18 +232,26 @@ $(document).ready(function(){
 		var tr = document.createElement('tr');
 		
 		var td_chkCode = document.createElement('td');
+		var chkCode = document.createElement('input');
+		chkCode.setAttribute('name', 'add_chkCode');
+ 		chkCode.setAttribute('class', 'chkCode');
+		chkCode.setAttribute('type', 'checkbox');
+		chkCode.setAttribute('checked', 'true');
+		chkCode.setAttribute('onclick', 'return(false)');
+		td_chkCode.append(chkCode);
 		
 		var td_code = document.createElement('td');
-		var td_code = document.createElement('input');
-		td_code.setAttribute("type", "text");
-		td_code.setAttribute("name", "code");
-		td_code.setAttribute("value", `${CODE}`);
-		td_code.setAttribute("readonly", "true");
+		var input_code = document.createElement('input');
+		input_code.setAttribute("type", "text");
+		input_code.setAttribute("name", "code");
+		input_code.setAttribute("value", `${CODE}`);
+		input_code.setAttribute("readonly", "true");
+		td_code.append(input_code);
 		
 		var td_decode = document.createElement('td');
 		var input_decode = document.createElement('input');
 		input_decode.setAttribute("type", "text");
-		input_decode.setAttribute("name", "decode");
+		input_decode.setAttribute("name", "add_decode");
 		input_decode.setAttribute("required", "true");
 		td_decode.append(input_decode);
 		
@@ -277,13 +297,6 @@ $(document).ready(function(){
 		
 		addCount++;
 	}
- 	
-  	function delCode() {
-  		var chkList = document.getElementsByName('chkCode')
-  		for(var i=0; i<chkList.length; i++) {
-  			chkList[i].parent().style.backgroundColor = 'red';
-  		}
- 	} 
 </script>
 </head>
 <body>
@@ -309,7 +322,7 @@ $(document).ready(function(){
 				<tbody id="tbody">
 					<c:forEach var="nRow" items="${list}" varStatus="status">
 						<tr>
-							<td><input type="checkbox" name="chkCode" value="${nRow.DECODE }"></td>
+							<td><input type="checkbox" name="chkCode" class="chkCode" value="${nRow.DECODE }"></td>
 							<td><input type="text" name="code" value="${nRow.CODE }" disabled="disabled"></td>
 							<td><input type="text" name="decode" value="${nRow.DECODE }" disabled="disabled"></td>	
 							<td><input type="text" name="decode_name" value="${nRow.DECODE_NAME }" disabled="disabled"></td>

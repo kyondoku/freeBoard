@@ -4,9 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ino.web.commonCode.mapper">
-	<insert id="insCodeDetail" parameterType="java.util.HashMap">
-		INSERT INTO CODED (CODE, DECODE, DECODE_NAME, USE_YN)
-		VALUES (#{CODE}, #{DECODE}, #{DECODE_NAME}, #{USE_YN})
+	<insert id="insCodeDetail" parameterType="java.util.List">
+		<foreach item="item" index="index" collection="list" open="INSERT ALL" close="SELECT * FROM SYS.DUAL">
+			INTO CODED (CODE, DECODE, DECODE_NAME, USE_YN) VALUES 
+			(#{item.CODE}, #{item.DECODE}, #{item.DECODE_NAME}, #{item.USE_YN})
+		</foreach>
 	</insert>
 	
 	<select id="selectCommonCodeList" resultType="java.util.HashMap">	
@@ -23,14 +25,21 @@
 		SELECT COUNT(*) FROM CODED WHERE DECODE IN (#{DECODE1}, #{DECODE2}, #{DECODE3})
 	</select>
 	
-	<update id="udtCodeDetail" parameterType="java.util.HashMap">
+	<update id="udtCodeDetail" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" open="DECLARE BEGIN" close="; END;">
 		UPDATE CODED
-		SET DECODE_NAME = #{DECODE_NAME}
-          , USE_YN = #{USE_YN}
-		WHERE DECODE = #{DECODE}
+		SET DECODE_NAME = #{item.DECODE_NAME}
+          , USE_YN = #{item.USE_YN}
+		WHERE DECODE = #{item.DECODE}
+		</foreach>
 	</update>
 	
-	<update id="delCodeDetail" parameterType="java.util.HashMap">
-		DELETE FROM CODED WHERE DECODE = #{DECODE}
+	<update id="delCodeDetail" parameterType="java.util.List">
+		DELETE FROM CODED
+		<where>
+			<foreach collection="list" item="item" open="" close="" separator="OR">
+			DECODE = #{item.DECODE}
+			</foreach>
+		</where>	
 	</update>
 </mapper>

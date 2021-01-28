@@ -21,20 +21,20 @@ public class CommCodeDao {
 		return sqlSessionTemplate.selectList("selectCommonCodeDetail", map);
 	}
 
-	public int insCodeDetail(Map<String, Object> map) {
-		return sqlSessionTemplate.insert("insCodeDetail", map);
+	public int insCodeDetail(List<HashMap<String, Object>> insertList) {
+		return sqlSessionTemplate.insert("insCodeDetail", insertList);
 	}
 
 	public int selectCommonCodeChk(Map<String, Object> map) {
 		return sqlSessionTemplate.selectOne("selectCommonCodeChk", map);
 	}
 
-	public int delCodeDetail(Map<String, Object> map) {
-		return sqlSessionTemplate.delete("delCodeDetail", map);
+	public int delCodeDetail(List<HashMap<String, Object>> deleteList) {
+		return sqlSessionTemplate.delete("delCodeDetail", deleteList);
 	}
 
-	public int udtCodeDetail(Map<String, Object> map) {
-		return sqlSessionTemplate.update("udtCodeDetail", map);
+	public int udtCodeDetail(List<HashMap<String, Object>> updateList) {
+		return sqlSessionTemplate.update("udtCodeDetail", updateList);
 	}
 	
 }

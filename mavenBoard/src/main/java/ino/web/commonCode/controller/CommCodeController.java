@@ -8,11 +8,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.beanutils.DynaBeanMapDecorator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,7 +68,7 @@ public class CommCodeController {
    @RequestMapping("/commonCodeChk.ino")
    @ResponseBody
    public int commonCodeChk(HttpServletRequest request
-         , @RequestParam(defaultValue = "", value="decode") List<String> decode) {
+     , @RequestParam(defaultValue = "", value="add_decode") List<String> decode) {
       
       Map<String, Object> map = new HashMap<String, Object>();
       
@@ -89,77 +91,39 @@ public class CommCodeController {
    @RequestMapping("/regCodeDetail.ino")
    @ResponseBody
    public Map<String, Object> insCodeDetail(HttpServletRequest request
-         , @RequestParam(defaultValue = "", value="code") List<String> code
-         , @RequestParam(defaultValue = "", value="decode") List<String> decode
-         , @RequestParam(defaultValue = "", value="decode_name") List<String> decodeName
-         , @RequestParam(defaultValue = "", value="mod_code") List<String> modCode
-         , @RequestParam(defaultValue = "", value="mod_decode") List<String> modDecode
-         , @RequestParam(defaultValue = "", value="mod_decode_name") List<String> modDecodeName
-         , @RequestParam(defaultValue = "", value="delList") String[] delList) {
+         , @RequestBody List<HashMap<String,Object>> ParamMap) {
+	   
+	  TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
+	   
+      List<HashMap<String,Object>> insertList = new ArrayList<>();
+      List<HashMap<String,Object>> updateList = new ArrayList<>();
+      List<HashMap<String,Object>> deleteList = new ArrayList<>();
       
-      List<String> useYnList = new ArrayList<String>();
-      List<String> mod_useYnList = new ArrayList<String>();
-      
-      Enumeration<String> useYns = request.getParameterNames();
-      
-      Map<String,Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<String, Object>();
       map.put("regMsg", "성공");
       
-      TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+      for (HashMap<String,Object> resultMap : ParamMap) {
+    	  if(resultMap.get("flag").equals("I")){
+    		  insertList.add(resultMap); 
+    	  }
+    	  if(resultMap.get("flag").equals("U")){
+    		  updateList.add(resultMap);
+    	  }
+    	  if(resultMap.get("flag").equals("D")){
+    		  deleteList.add(resultMap);
+    	  }  
+      }
       
       try {
-      
-         do {
-           String useYn = useYns.nextElement();
-           String value = request.getParameter(useYn);  
-   
-           if(useYn.startsWith("useYn_")) {
-              useYnList.add(value);
-           } else if(useYn.startsWith("mod_useYn_")) {
-              mod_useYnList.add(value);
-           }
-         } while (useYns.hasMoreElements());
-         
-         for(int i=0; i<code.size(); i++) {
-            map.put("CODE", code.get(i));
-            map.put("DECODE", decode.get(i));
-            map.put("DECODE_NAME", decodeName.get(i));
-            map.put("USE_YN", useYnList.get(i));
-            
-            map = commCodeService.insCodeDetail(map);
-         }
-         
-         if(modCode.size() > 0) {      
-            for(int i=0; i<modCode.size(); i++){
-               map.put("CODE", modCode.get(i));
-               map.put("DECODE", modDecode.get(i));
-               map.put("DECODE_NAME", modDecodeName.get(i));
-               map.put("USE_YN", mod_useYnList.get(i));
-               
-               map = commCodeService.udtCodeDetail(map);
-            }
-         }
-         
-         if(delList.length > 0) {
-            System.out.println("delListLength : " + delList.length);
-          
-            for(int i=0; i<delList.length; i++) {
-               System.out.println("delList : " + delList[i]);         
-               map.put("DECODE", delList[i]);
-               
-               map = commCodeService.delCodeDetail(map);
-            }
-         }
-
-         transactionManager.commit(status);
-         
+    	  commCodeService.insCodeDetail(insertList);
+    	  commCodeService.udtCodeDetail(updateList);
+    	  commCodeService.delCodeDetail(deleteList);
       } catch(RuntimeException e) {
-         transactionManager.rollback(status);
-         map.put("regMsg", "실패");
-         e.printStackTrace();
-      } 
+          transactionManager.rollback(status);
+          map.put("regMsg", "실패");
+          e.printStackTrace();
+      }
       
-      System.out.println("before return");
       return map; 
    }
 }

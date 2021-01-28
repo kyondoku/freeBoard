@@ -14,11 +14,11 @@ public interface CommCodeService {
 	
 	List<Map<String, Object>> selectCommonCodeDetail(Map<String, Object> map);
 	
-	Map<String, Object> insCodeDetail(Map<String, Object> map);
+	Map<String, Object> insCodeDetail(List<HashMap<String, Object>> insertList);
 	
 	int selectCommonCodeChk(Map<String, Object> map);
 
-	Map<String, Object> delCodeDetail(Map<String, Object> map);
+	Map<String, Object> delCodeDetail(List<HashMap<String, Object>> deleteList);
 
-	Map<String, Object> udtCodeDetail(Map<String, Object> map);
+	Map<String, Object> udtCodeDetail(List<HashMap<String, Object>> updateList);
 }

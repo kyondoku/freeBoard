@@ -25,46 +25,34 @@ public class CommCodeServiceImpl implements CommCodeService {
 	}
 
 	@Override
-	public Map<String, Object> insCodeDetail(Map<String, Object> map) {
-		int result = CommCodeDao.insCodeDetail(map);
-		
-		if(result > 0) {
-			map.put("msg", "success : " + result);
-		} else {
-			map.put("msg", "failed");
-		}
-		
-		return map;
-	}
-
-	@Override
 	public int selectCommonCodeChk(Map<String, Object> map) {
 		return CommCodeDao.selectCommonCodeChk(map);
 	}
 
 	@Override
-	public Map<String, Object> delCodeDetail(Map<String, Object> map) {
-		int result = CommCodeDao.delCodeDetail(map);
+	public Map<String, Object> insCodeDetail(List<HashMap<String, Object>> insertList) {
+		int result = CommCodeDao.insCodeDetail(insertList);
 		
-		if(result > 0) {
-			map.put("msg", "success : " + result);
-		} else {
-			map.put("msg", "failed");
-		}
-		
+		Map<String, Object> map = new HashMap<>();
+		map.put("success", result);
 		return map;
 	}
 
 	@Override
-	public Map<String, Object> udtCodeDetail(Map<String, Object> map) {
-		int result = CommCodeDao.udtCodeDetail(map);
+	public Map<String, Object> delCodeDetail(List<HashMap<String, Object>> deleteList) {
+		int result = CommCodeDao.delCodeDetail(deleteList);
 		
-		if(result > 0) {
-			map.put("msg", "success : " + result);
-		} else {
-			map.put("msg", "failed");
-		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("success", result);
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> udtCodeDetail(List<HashMap<String, Object>> updateList) {
+		int result = CommCodeDao.udtCodeDetail(updateList);
 		
+		Map<String, Object> map = new HashMap<>();
+		map.put("success", result);
 		return map;
 	}
 }
