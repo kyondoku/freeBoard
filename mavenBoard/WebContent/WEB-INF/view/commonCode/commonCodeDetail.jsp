@@ -71,7 +71,7 @@ $(document).ready(function(){
 		var checkbox = $("input[name='chkCode']:checked");
 		
 		for(var i=0; i<checkbox.length; i++){
-			delList.push({"flag" : "D", decode : checkbox[i].value});		
+			delList.push({"flag" : "D", DECODE : checkbox[i].value});		
 		}
 		
 		if(checkbox.length > 0) {
@@ -191,7 +191,7 @@ $(document).ready(function(){
 				} else {
 					var useYn = 'N';
 				}
-				addModList.push({"flag" : "U" , CODE : code, DECODE : decode, DECODE_NAME : decode_name, USE_YN : useYn});
+				addModList.push({"flag" : "U" , DECODE : decode, DECODE_NAME : decode_name, USE_YN : useYn});
 			})
 		}
 		
@@ -217,7 +217,7 @@ $(document).ready(function(){
 			success: function(data){
 				addCount = 0;
 				modCount = 1;
-				console.log(data.regMsg);
+				alert(data.regMsg);
 				location.href='./commonCodeDetail.ino?num='+`${CODE}`
 			}
 		})

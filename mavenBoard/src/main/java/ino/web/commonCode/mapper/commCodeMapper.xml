@@ -34,12 +34,12 @@
 		</foreach>
 	</update>
 	
-	<update id="delCodeDetail" parameterType="java.util.List">
+	<delete id="delCodeDetail" parameterType="java.util.List">
 		DELETE FROM CODED
 		<where>
 			<foreach collection="list" item="item" open="" close="" separator="OR">
 			DECODE = #{item.DECODE}
 			</foreach>
 		</where>	
-	</update>
+	</delete>
 </mapper>

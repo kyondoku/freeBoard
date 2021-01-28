@@ -30,6 +30,7 @@ public class CommCodeDao {
 	}
 
 	public int delCodeDetail(List<HashMap<String, Object>> deleteList) {
+		System.out.println("여기여깅겨ㅣㅇ겨ㅣㅇ겨ㅣㅇ겨이겨ㅣㅇㄱ");
 		return sqlSessionTemplate.delete("delCodeDetail", deleteList);
 	}
 

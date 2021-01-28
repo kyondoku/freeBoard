@@ -114,10 +114,23 @@ public class CommCodeController {
     	  }  
       }
       
+      System.out.println(insertList.size());
+      System.out.println(updateList.size());
+      System.out.println(deleteList.size());
+      
+/*      System.out.println(insertList.get(0).get("DECODE"));*/
+      
       try {
-    	  commCodeService.insCodeDetail(insertList);
-    	  commCodeService.udtCodeDetail(updateList);
-    	  commCodeService.delCodeDetail(deleteList);
+    	  if(insertList.size() > 0) {
+    		  commCodeService.insCodeDetail(insertList);    		  
+    	  }
+    	  if(updateList.size() > 0) {
+    		  commCodeService.udtCodeDetail(updateList);    		  
+    	  }
+    	  if(deleteList.size() > 0) {
+    		  commCodeService.delCodeDetail(deleteList);    		  
+    	  }
+    	  transactionManager.commit(status);
       } catch(RuntimeException e) {
           transactionManager.rollback(status);
           map.put("regMsg", "실패");
