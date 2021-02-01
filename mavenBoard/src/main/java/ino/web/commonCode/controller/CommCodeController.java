@@ -92,35 +92,35 @@ public class CommCodeController {
    @ResponseBody
    public Map<String, Object> insCodeDetail(HttpServletRequest request
          , @RequestBody List<HashMap<String,Object>> ParamMap) {
+	   Map<String, Object> map = new HashMap<String, Object>();
+	   TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
 	   
-	  TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
-	   
-      List<HashMap<String,Object>> insertList = new ArrayList<>();
-      List<HashMap<String,Object>> updateList = new ArrayList<>();
-      List<HashMap<String,Object>> deleteList = new ArrayList<>();
-      
-      Map<String, Object> map = new HashMap<String, Object>();
-      map.put("regMsg", "성공");
-      
-      for (HashMap<String,Object> resultMap : ParamMap) {
-    	  if(resultMap.get("flag").equals("I")){
-    		  insertList.add(resultMap); 
-    	  }
-    	  if(resultMap.get("flag").equals("U")){
-    		  updateList.add(resultMap);
-    	  }
-    	  if(resultMap.get("flag").equals("D")){
-    		  deleteList.add(resultMap);
-    	  }  
-      }
-      
-      System.out.println(insertList.size());
-      System.out.println(updateList.size());
-      System.out.println(deleteList.size());
+	   try {	   
+	      List<HashMap<String,Object>> insertList = new ArrayList<>();
+	      List<HashMap<String,Object>> updateList = new ArrayList<>();
+	      List<HashMap<String,Object>> deleteList = new ArrayList<>();
+	      
+	      map.put("regMsg", "성공");
+	      
+	      for (HashMap<String,Object> resultMap : ParamMap) {
+	    	  if(resultMap.get("flag").equals("I")){
+	    		  insertList.add(resultMap); 
+	    	  }
+	    	  if(resultMap.get("flag").equals("U")){
+	    		  updateList.add(resultMap);
+	    	  }
+	    	  if(resultMap.get("flag").equals("D")){
+	    		  deleteList.add(resultMap);
+	    	  }  
+	      }
+	      
+	      System.out.println(insertList.size());
+	      System.out.println(updateList.size());
+	      System.out.println(deleteList.size());
       
 /*      System.out.println(insertList.get(0).get("DECODE"));*/
       
-      try {
+
     	  if(insertList.size() > 0) {
     		  commCodeService.insCodeDetail(insertList);    		  
     	  }
